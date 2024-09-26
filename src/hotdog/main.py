@@ -4,7 +4,7 @@ from fastapi import FastAPI, File, UploadFile
 from datetime import datetime
 from pytz import timezone
 import pymysql.cursors
-import randdom
+import random
 
 app = FastAPI()
 
