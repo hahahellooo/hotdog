@@ -1,10 +1,8 @@
+from transformers import pipeline
 from fastapi.templating import Jinja2Templates
-from typing import Annotated
 import os
 from fastapi import FastAPI, File, UploadFile
 from datetime import datetime
-from pytz import timezone
-import pymysql.cursors
 import random
 from fastapi import Request
 
@@ -28,27 +26,17 @@ async def home(request: Request):
 async def create_upload_file(file: UploadFile):
 
     img = await file.read()
-    file_name = file.filename
-    file_ext = file.content_type.split("/")[-1] #"image/png"
-    upload_dir = os.getenv("UPLOAD_DIR",'/home/hahahellooo/code/hnh/img')
-    predict = predit()
-    if not os.path.exists(upload_dir):
-        os.makedirs(upload_dir, exist_ok=True)
-    import uuid
-    file_full_path = os.path.join(upload_dir, f'{uuid.uuid4()}.{file_ext}')
+    model = pipeline("image-classification", model="julien-c/hotdog-not-hotdog")
+    from PIL import Image
+    import io
+    img = Image.open(io.BytesIO(img)) # 이미지 바이트를 PIL 이미지로 변환
+    p = model(img)
+    from hotdog.util import get_max_score
+    message = get_max_score(p)
+    return message
     
-    with open(file_full_path, "wb") as f:
-        f.write(img)
-
-    return  {
-               "file_name" : file.filename,
-               "content_type" :file.content_type,
-               "file_full_path":file_full_path,
-               "prediction":predict
-            }
-
-def predict():
-    result = {"Hello":random.choice(["This is a hotdog","This is not a hotdog"])}
+#def predict():
+#    result = {"Hello":random.choice(["This is a hotdog","This is not a hotdog"])}
 
 
-    return result
+#    return result
