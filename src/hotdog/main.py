@@ -4,6 +4,7 @@ from fastapi import FastAPI, File, UploadFile
 from datetime import datetime
 from pytz import timezone
 import pymysql.cursors
+import randdom
 
 app = FastAPI()
 
@@ -20,6 +21,7 @@ async def create_upload_file(file: UploadFile):
     file_name = file.filename
     file_ext = file.content_type.split("/")[-1] #"image/png"
     upload_dir = os.getenv("UPLOAD_DIR",'/home/hahahellooo/code/hnh/img')
+    predict = predit()
     if not os.path.exists(upload_dir):
         os.makedirs(upload_dir, exist_ok=True)
     import uuid
@@ -31,6 +33,11 @@ async def create_upload_file(file: UploadFile):
     return  {
                "file_name" : file.filename,
                "content_type" :file.content_type,
-               "file_full_path":file_full_path
+               "file_full_path":file_full_path,
+               "prediction":predict
             }
 
+def predict():
+    result = random.ranint(0,10)
+
+    return result
