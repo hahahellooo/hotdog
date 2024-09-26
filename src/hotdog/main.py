@@ -1,3 +1,4 @@
+from fastapi.templating import Jinja2Templates
 from typing import Annotated
 import os
 from fastapi import FastAPI, File, UploadFile
@@ -5,14 +6,23 @@ from datetime import datetime
 from pytz import timezone
 import pymysql.cursors
 import random
+from fastapi import Request
 
 app = FastAPI()
 
+html = Jinja2Templates(directory="public")
 
-@app.post("/files/")
-async def create_file(file: Annotated[bytes, File()]):
-    return {"file_size": len(file)}
+@app.get("/hello")
+def read_root():
+    return {"Hello": "🌭hotdog🌭"}
 
+@app.get("/")
+async def home(request: Request):
+    hotdog = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSczt3ABqLESuSYrykIdfJvg26VGsg21Qp0Pg&s"
+    dog = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhVhtuh5vDwhVV5WB68N5tAo6IqwoVusaNaQ&s"
+    image_url = random.choice([hotdog, dog])
+    return html.TemplateResponse("index.html",{"request":request, "image_url":image_url})
+    
 
 @app.post("/uploadfile/")
 async def create_upload_file(file: UploadFile):
@@ -38,6 +48,7 @@ async def create_upload_file(file: UploadFile):
             }
 
 def predict():
-    result = random.ranint(0,10)
+    result = {"Hello":random.choice(["This is a hotdog","This is not a hotdog"])}
+
 
     return result

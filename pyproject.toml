@@ -8,6 +8,9 @@ authors = [
 dependencies = [
     "fastapi>=0.115.0",
     "uvicorn>=0.30.6",
+    "torch>=2.4.1",
+    "torchvision>=0.19.1",
+    "jinja2>=3.1.4",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
